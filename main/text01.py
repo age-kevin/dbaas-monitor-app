@@ -6,7 +6,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 
 # 数据库连接
-engine = create_engine('oracle://qhdbmon:Lahmy11c@139.198.16.188:1521/test1', echo=True)
+engine = create_engine('oracle://qhdbmon:Lahmy11c@139.198.16.188:1521/test1', encoding='utf-8', echo=True)
 # 连接数据库
 # conn = db.connect()
 DBSession = sessionmaker(bind=engine)
@@ -58,8 +58,9 @@ def handle_conf():
 def conn_db(param):
     # 查询
     res = session.execute(param)
-    print(res)
-    return res
+    for item in res:
+        result = item[0]
+    return result
 
 
 if __name__ == "__main__":
