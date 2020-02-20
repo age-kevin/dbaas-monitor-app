@@ -18,3 +18,8 @@ name03=projectName03
 enabled03=y
 type03=sql
 cmd03=select sum(multipasses_executions) multipass_exec FROM v$sql_workarea_histogram WHERE total_executions<>0
+
+name04=projectName04
+enabled04=y
+type04=shell
+cmd04=sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'
