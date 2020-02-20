@@ -1,40 +1,43 @@
-from flask import Flask, request, Response
-from flask_request_params import bind_request_params
-import json
+from flask import Flask
 import configparser
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
+# from flask_apscheduler import APScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 
-# 数据库连接
+
+class Config(object):
+    JOBS = [
+        {
+            'id': 'job1',
+            'func': '__main__:test_print',
+            'args': '',  # 执行程序参数
+            'trigger': 'interval',
+            'seconds': 5
+        }
+    ]
+
+
+def test_print():
+    print("1")
+
+
+# 数据库地址
 engine = create_engine('oracle://qhdbmon:Lahmy11c@139.198.16.188:1521/test1', encoding='utf-8', echo=True)
-# 连接数据库
-# conn = db.connect()
+# 数据库连接
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 app = Flask(__name__)
-app.before_request(bind_request_params)
 
 
-@app.route('/main/text01', methods=['GET'])
-def get_text01():
-    handle_conf()
-
-    text = request.params["askjson"]
-    action = request.params["action"]
-    if action == "query":
-        jieguo = {"text": text}
-        print(text)
-        return Response(json.dumps(jieguo))
-    else:
-        return "Hello World"
+# @app.route('/hello', methods=["POST", "GET"])
+# def hello():
+#     return "success"
 
 
 def handle_conf():
     config = configparser.ConfigParser()
     config.read("config/test01.txt")
-    # print(config.sections())
-    # print(config.options("global"))
-    # print(config.get("global", "db_type"))
     item_detail = config.options("item_detail")
     print(item_detail)
     a = 1
@@ -64,4 +67,11 @@ def conn_db(param):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    # app.config.from_object(Config())
+    scheduler = BlockingScheduler()
+    scheduler.add_job(test_print, 'interval', seconds=5)
+    scheduler.start()
+    # scheduler = APScheduler()  # 实例化APScheduler
+    # scheduler.init_app(app)  # 把任务列表放进flask
+    # scheduler.start()  # 启动任务列表
+    # app.run(debug=False)  # 启动flask
