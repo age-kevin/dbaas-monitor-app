@@ -10,7 +10,7 @@ def create_app():
          "JOBS": [
              {
                  "id": "my_job",  # 任务ID
-                 "func": "task:my_job",  # 任务位置
+                 "func": "task01:my_job01",  # 任务位置
                  "trigger": "interval",  # 触发器
                  "seconds": 5  # 时间间隔
              }

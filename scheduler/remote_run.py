@@ -11,6 +11,6 @@ ssh.set_missing_host_key_policy(know_host)
 ssh.connect(
     hostname="139.198.16.188",
     port=22,
-    username="oracle",
-    password="1qa2ws#ED"
+    username="root",
+    password="0802$Zhl"
 )
