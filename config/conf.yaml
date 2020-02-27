@@ -1,0 +1,20 @@
+global:
+  db_type: oracle
+  instance_config_file: /qhl/redis/tools/etc/monitor.conf
+  interval: 10
+
+item_detail:
+  item_detail_projectName01:
+    enabled: y
+    type: sql
+    cmd: select count(*) from v$session
+
+  item_detail_projectName02:
+    enabled: y
+    type: sql
+    cmd: select value from v$pgastat where name in ('cache hit percentage')
+
+  item_detail_projectName03:
+    enabled: y
+    type: shell
+    cmd: sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'
