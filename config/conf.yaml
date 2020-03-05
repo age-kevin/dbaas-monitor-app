@@ -4,17 +4,20 @@ global:
   interval: 10
 
 item_detail:
-  item_detail_projectName01:
-    enabled: y
-    type: sql
-    cmd: select count(*) from v$session
+  item_detail_01:
+    name: name01 # 监控名称
+    enabled: y #是否可用
+    type: sql # 监控类型
+    cmd: select count(*) from v$session # SQL or 命令
 
-  item_detail_projectName02:
+  item_detail_02:
+    name: name02
     enabled: y
     type: sql
     cmd: select value from v$pgastat where name in ('cache hit percentage')
 
-  item_detail_projectName03:
+  item_detail_03:
+    name: name03
     enabled: y
     type: shell
     cmd: sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'

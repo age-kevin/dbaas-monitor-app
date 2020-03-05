@@ -1,0 +1,39 @@
+2020-03-05 11:17:52,796: INFO task01.py-task01-my_job01-14 定时任务开始!
+2020-03-05 11:17:52,846: INFO task01.py-task01-handle_sql-20 num: 1
+2020-03-05 11:17:52,856: INFO task01.py-task01-handle_sql-29 命令：select count(*) from v$session
+2020-03-05 11:17:54,823: INFO task01.py-task01-handle_sql-34 结果：50
+2020-03-05 11:17:54,824: INFO task01.py-task01-handle_sql-29 命令：select value from v$pgastat where name in ('cache hit percentage')
+2020-03-05 11:17:54,919: INFO task01.py-task01-handle_sql-34 结果：100
+2020-03-05 11:17:54,919: INFO task01.py-task01-handle_sql-37 命令：sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'
+2020-03-05 11:17:55,535: INFO task01.py-task01-handle_sql-44 结果：8.2
+:
+2020-03-05 16:59:27,695: INFO task01.py-task01-my_job01-14 定时任务开始!
+2020-03-05 16:59:27,748: INFO task01.py-task01-handle_sql-20 num: 1
+2020-03-05 16:59:27,761: INFO task01.py-task01-handle_sql-29 命令：select count(*) from v$session
+2020-03-05 16:59:29,489: INFO task01.py-task01-handle_sql-34 结果：48
+2020-03-05 16:59:29,489: INFO task01.py-task01-handle_sql-29 命令：select value from v$pgastat where name in ('cache hit percentage')
+2020-03-05 16:59:29,563: INFO task01.py-task01-handle_sql-34 结果：100
+2020-03-05 16:59:29,564: INFO task01.py-task01-handle_sql-37 命令：sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'
+2020-03-05 16:59:30,368: INFO task01.py-task01-handle_sql-44 结果：8.2
+:
+2020-03-05 16:59:32,699: INFO task01.py-task01-my_job01-14 定时任务开始!
+2020-03-05 16:59:32,706: INFO task01.py-task01-handle_sql-20 num: 1
+2020-03-05 16:59:32,715: INFO task01.py-task01-handle_sql-29 命令：select count(*) from v$session
+2020-03-05 16:59:33,934: INFO task01.py-task01-handle_sql-34 结果：49
+2020-03-05 16:59:33,935: INFO task01.py-task01-handle_sql-29 命令：select value from v$pgastat where name in ('cache hit percentage')
+2020-03-05 16:59:34,012: INFO task01.py-task01-handle_sql-34 结果：100
+2020-03-05 16:59:34,012: INFO task01.py-task01-handle_sql-37 命令：sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'
+2020-03-05 16:59:34,972: INFO task01.py-task01-handle_sql-44 结果：8.2
+:
+2020-03-05 16:59:37,698: INFO task01.py-task01-my_job01-14 定时任务开始!
+2020-03-05 16:59:37,703: INFO task01.py-task01-handle_sql-20 num: 1
+2020-03-05 16:59:37,710: INFO task01.py-task01-handle_sql-29 命令：select count(*) from v$session
+2020-03-05 16:59:38,905: INFO task01.py-task01-handle_sql-34 结果：48
+2020-03-05 16:59:38,905: INFO task01.py-task01-handle_sql-29 命令：select value from v$pgastat where name in ('cache hit percentage')
+2020-03-05 16:59:38,984: INFO task01.py-task01-handle_sql-34 结果：100
+2020-03-05 16:59:38,984: INFO task01.py-task01-handle_sql-37 命令：sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'
+2020-03-05 16:59:40,195: INFO task01.py-task01-handle_sql-44 结果：8.2
+:
+2020-03-05 16:59:42,694: INFO task01.py-task01-my_job01-14 定时任务开始!
+2020-03-05 16:59:42,768: INFO task01.py-task01-handle_sql-20 num: 1
+2020-03-05 16:59:42,776: INFO task01.py-task01-handle_sql-29 命令：select count(*) from v$session
