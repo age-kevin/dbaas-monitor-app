@@ -1,68 +1,94 @@
 import yaml
+import os
+import socket
 from remote_run import ssh
-import logger.monitor_logger
+from logger.monitor_logger import get_logger
 from concurrent.futures import ThreadPoolExecutor
-import db_conn
+from conn_prometheus import conn_gateway
+from db_conn import conn
 
 
 # 创建线程池执行器
 executor = ThreadPoolExecutor(2)
-logger = logger.monitor_logger.get_logger(__name__)
+logger = get_logger(__name__)
 
 
 def my_job01():
-    logger.info("定时任务开始!")
+    logger.debug("定时任务开始!")
+    # 判断是本台主机上是什么数据库实例
+    db_type = config_is_exists()
     # 获取数据源信息
-    get_db_source()
+    get_db_source(db_type)
 
 
-def handle_sql(num, session):
-    logger.info("num: %s" % num)
-    with open("config/conf.yaml", "r") as yaml_file:
+def handle_sql(flag, session, instance_info):
+    logger.info("flag: %s" % flag)
+    with open("config/oracle_config.yaml", "r") as yaml_file:
         yaml_obj = yaml.load(yaml_file)
         item_detail = yaml_obj["item_detail"]
         for item in item_detail:
             project = item_detail[item]
+            # 指标名称
+            index_name = project["index_name"]
+            # 指标描述
+            desc = project["desc"]
             if project["enabled"] == "y":
                 if project["type"] == "sql":
                     cmd = project["cmd"]
-                    logger.info("命令：%s" % cmd)
+                    logger.debug("命令：%s" % cmd)
                     # 查询
                     res = session.execute(cmd)
                     for a in res:
                         result = a[0]
-                        logger.info("结果：%s" % result)
+                        # push_to_gateway
+                        conn_gateway(flag, index_name, desc, instance_info, result)
+                        logger.debug("结果：{}".format(result))
                 elif project["type"] == "shell":
                     cmd = project["cmd"]
-                    logger.info("命令：%s" % cmd)
+                    logger.debug("命令：%s" % cmd)
                     # 执行主机命令
                     stdin, stdout, stderr = ssh.exec_command(cmd)
                     # stdin  标准格式的输入，是一个写权限的文件对象
                     # stdout 标准格式的输出，是一个读权限的文件对象
                     # stderr 标准格式的错误，是一个写权限的文件对象
                     # 读返回结果
-                    logger.info("结果：%s:" % str(stdout.read().decode()))
+                    conn_gateway(flag, index_name, desc, instance_info, stdout.read().decode())
+                    logger.debug("结果：{}".format(str(stdout.read().decode())))
 
 
-def get_db_source():
-    try:
-        with open("config/db_conf.yaml", "r") as yaml_file:
-            yaml_obj = yaml.load(yaml_file)
-            db_info = yaml_obj["db_info"]
-            for db_source in db_info:
-                entity = db_info[db_source]
-                db_type = entity["db_type"]
-                db_ip = entity["db_ip"]
-                db_user = entity["db_user"]
-                db_password = entity["db_password"]
-                db_port = entity["db_port"]
-                entity_name = entity["entity_name"]
-                url = db_type + "://" + db_user + ":" + db_password + "@" + db_ip + ":" + str(
-                    db_port) + "/" + entity_name
-                print(url)
-                session = db_conn.conn(url)
-                count = 1
-                executor.submit(handle_sql, count, session)
-    except Exception:
-        logger.error("get_db_source()异常！")
+def get_db_source(db_type):
+    # 获取本机ip地址
+    # my_name = socket.getfqdn(socket.gethostname())
+    # my_address = socket.gethostbyname(my_name)
+    my_address = "139.198.16.188"
+    logger.debug("本机地址：{}".format(my_address))
+    # noinspection PyBroadException
+    with open("config/" + db_type + "_config.yaml", "r") as yaml_file:
+        yaml_obj = yaml.load(yaml_file)
+        my_global = yaml_obj["global"]
+        # 实例信息配置文件
+        instance_config_file = my_global["instance_config_file"]
+        # 账户名
+        db_user = my_global["user_name"]
+        # 密码
+        db_password = my_global["password"]
+        with open(instance_config_file, "r") as f:
+            for line in f.readlines():
+                line = line.strip('\n')
+                if line:
+                    instance_info = line.split(':')
+                    logger.debug("实例信息：{}".format(instance_info))
+                    db_port = instance_info[0]
+                    instance_name = instance_info[2]
+                    url = db_type + "://" + db_user + ":" + db_password + "@" + my_address + ":" + str(
+                            db_port) + "/" + instance_name
+                    logger.debug("数据库连接串：{}".format(url))
+                    session = conn(url)
+                    flag = db_type + "_" + instance_name + "_" + db_port
+                    executor.submit(handle_sql, flag, session, instance_info)
 
+
+def config_is_exists():
+    if os.path.exists("config/oracle_config.yaml"):
+        db_type = "oracle"
+    return db_type

@@ -1,23 +1,28 @@
 global:
   db_type: oracle
-  instance_config_file: /qhl/redis/tools/etc/monitor.conf
+  instance_config_file: config/monitoring.txt
   interval: 10
+  user_name: qhdbmon
+  password: Lahmy11c
 
 item_detail:
   item_detail_01:
-    name: name01 # 监控名称
+    index_name: name01 # 监控名称
+    desc: discrption01 #监控描述
     enabled: y #是否可用
     type: sql # 监控类型
-    cmd: select count(*) from v$session # SQL or 命令
+    cmd: select count(*) from v$session # SQL or shell命令
 
   item_detail_02:
-    name: name02
+    index_name: name02
+    desc: discrption02
     enabled: y
     type: sql
     cmd: select value from v$pgastat where name in ('cache hit percentage')
 
   item_detail_03:
-    name: name03
+    index_name: name03
+    desc: discrption03
     enabled: y
     type: shell
     cmd: sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'

@@ -1,0 +1,2 @@
+prometheus_url: "http://10.60.82.168:3881"
+cmdb_url: "postgresql://dbaasopr:Dbaas_opr1@10.60.233.51:54321/dbaas"

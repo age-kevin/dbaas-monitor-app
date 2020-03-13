@@ -1,8 +1,0 @@
-db_info:
-  db_source_01:
-    db_type: oracle
-    db_ip: 139.198.16.188
-    db_user: qhdbmon
-    db_password: Lahmy11c
-    db_port: 1521
-    entity_name: test1

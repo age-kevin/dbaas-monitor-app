@@ -15,7 +15,7 @@ def get_logger(name):
     else:
         os.mkdir(LOG_PATH)
     # 设置日志基础级别
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     # 日志格式
     formatter = '%(asctime)s: %(levelname)s %(filename)s-%(module)s-%(funcName)s-%(lineno)d %(message)s'
     log_formatter = logging.Formatter(formatter)
