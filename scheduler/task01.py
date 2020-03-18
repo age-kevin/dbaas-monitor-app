@@ -91,4 +91,6 @@ def get_db_source(db_type):
 def config_is_exists():
     if os.path.exists("config/oracle_config.yaml"):
         db_type = "oracle"
+    elif os.path.exists("config/redis_config.yaml"):
+        db_type = "redis"
     return db_type
