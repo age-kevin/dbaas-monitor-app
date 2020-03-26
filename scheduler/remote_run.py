@@ -9,8 +9,10 @@ know_host = paramiko.AutoAddPolicy()
 ssh.set_missing_host_key_policy(know_host)
 # 连接服务器
 ssh.connect(
-    hostname="139.198.16.188",
-    port=22,
-    username="root",
-    password="0802$Zhl"
+    hostname="10.60.233.51",
+    port=2222,
+    username="oracle",
+    password="oracle"
 )
+
+

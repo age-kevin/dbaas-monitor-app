@@ -7,22 +7,100 @@ global:
 
 item_detail:
   item_detail_01:
-    index_name: name01 # 监控名称
-    desc: discrption01 #监控描述
-    enabled: y #是否可用
-    type: sql # 监控类型
-    cmd: select count(*) from v$session # SQL or shell命令
+    index_name: TPS
+    desc: 每秒的事物量
+    enabled: y
+    type: sql
+    cmd: select sum(to_number(value, 99999999999)) from v$sysstat where name in ( 'user rollbacks','user commits')
 
   item_detail_02:
-    index_name: name02
-    desc: discrption02
+    index_name: session
+    desc: 当前连接到实例的session数
+    enabled: y
+    type: sql
+    cmd: select count(*) from v$session
+
+  item_detail_03:
+    index_name: process
+    desc: 当前连接process数
+    enabled: y
+    type: sql
+    cmd: select count(*) from v$process
+
+  item_detail_04:
+    index_name: Session_Used_Rate
+    desc: 当前连接到实例的session数占用比例
+    enabled: y
+    type: sql
+    cmd: select (select count(*) from v$session)/(select value from v$parameter where name = 'sessions')*100 from dual
+
+  item_detail_05:
+    index_name: Process_Used_Rate
+    desc: 当前连接到实例的session数
+    enabled: y
+    type: sql
+    cmd: select (select count(*) from v$process)/(select value from v$parameter where name = 'processes')*100 from dual
+
+  item_detail_06:
+    index_name: IO
+    desc: 文件系统 I/O 吞吐量/秒
+    enabled: y
+    type: sql
+    cmd: select sum(decode(name,'physical read bytes',value,'physical write bytes',value,0))/1024/1024/1024 as mbps from v$sysstat where name in ('physical read bytes','physical read total bytes','physical write bytes','physical write total bytes','physical read total IO requests','physical write total IO requests')
+
+  item_detail_07:
+    index_name: SGA_Hit_Rate
+    desc: SGA的命中率
+    enabled: y
+    type: sql
+    cmd: select round(100 * ((a.value + b.value) - c.value) / (a.value + b.value)) "SGA HIT RATIO" from v$sysstat a, v$sysstat b, v$sysstat c where a.name = 'db block gets' and b.name = 'consistent gets' and c.name = 'physical reads'
+
+  item_detail_08:
+    index_name: Data_Dictionary_Cache_Hit_Rate
+    desc: SGA中字典缓冲区的命中率
+    enabled: y
+    type: sql
+    cmd: select sum(gets-getmisses-usage-fixed)/sum(gets)*100 from v$rowcache
+
+  item_detail_09:
+    index_name: Library_Cache_Hit_Rate
+    desc: SGA中共享缓存区的命中率
+    enabled: y
+    type: sql
+    cmd: select sum(pins-reloads)/sum(pins)*100 from v$librarycache
+
+  item_detail_10:
+    index_name: Redo_Cache_Hit_Rate
+    desc: SGA中重做日志缓存区的命中率
+    enabled: y
+    type: sql
+    cmd: select decode(immediate_gets+immediate_misses,0,0,immediate_misses/(immediate_gets+immediate_misses)*100) ratio from v$latch where name in ('redo copy')
+
+  item_detail_11:
+    index_name: PGA_Hit_Rate
+    desc: PGA缓存命中率
     enabled: y
     type: sql
     cmd: select value from v$pgastat where name in ('cache hit percentage')
 
-  item_detail_03:
-    index_name: name03
-    desc: discrption03
+  item_detail_12:
+    index_name: Temp_Tablespace_exchange_Frequency
+    desc: 临时表空间交换的操作次数
     enabled: y
-    type: shell
-    cmd: sudo /opt/cgtools/bin/cginfo -t performance -s memory|grep asdf12qw|awk '{print $8}'|tr -d '%'
+    type: sql
+    cmd: select sum(multipasses_executions) multipass_exec FROM v$sql_workarea_histogram WHERE total_executions<>0
+
+  item_detail_13:
+    index_name: Memory_Disk_Rate
+    desc: 内存和硬盘的排序比率
+    enabled: y
+    type: sql
+    cmd: select case when (select round(sum(case when name='sorts(disk)' then value else 0 end) / sum(case when name='sorts(memory)' then value else 0 end)*100) from (SELECT name,value FROM v$sysstat WHERE name IN ('sorts(memory)', 'sorts(disk)'))) is null then 0 end rate from dual
+
+  item_detail_14:
+    index_name: Deadlock_Number
+    desc: 当前死锁个数
+    enabled: y
+    type: sql
+    cmd: select count(*) from v$sql where hash_value in (select sql_hash_value from v$session where sid in  (select session_id from v$locked_object))
+

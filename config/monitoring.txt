@@ -1,2 +1,1 @@
-1521:asdf12qw:test1:12.2.0.1:master:DEV:zhonghl003:SZ:2:100
-1521:asdf12qw:test1:12.2.0.1:master:DEV:zhonghl003:SZ:2:100
+11521:asdf12qw:orcl:12.2.0.1:master:DEV:zhonghl003:SZ:2:100
